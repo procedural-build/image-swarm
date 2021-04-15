@@ -10,6 +10,7 @@ pydevd-pycharm = "~=201.7223.92"
 
 [packages]
 docker = "*"
+boto3 = "*"
 
 [requires]
 python_version = "3.8"
