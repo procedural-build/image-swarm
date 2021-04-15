@@ -1,0 +1,15 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[dev-packages]
+pytest = "*"
+black = "==19.10b0"
+pydevd-pycharm = "~=201.7223.92"
+
+[packages]
+docker = "*"
+
+[requires]
+python_version = "3.8"
