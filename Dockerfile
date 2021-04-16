@@ -37,6 +37,17 @@ COPY src/ /app
 
 CMD ["python main.py"]
 
+# Versioning
+ARG DOCKER_TAG
+ARG BUILD_DATE
+ARG GIT_COMMIT
+ARG BRANCH
+
+ENV DOCKER_TAG=${DOCKER_TAG:-dev}
+ENV BUILD_DATE=$BUILD_DATE
+ENV GIT_COMMIT=$GIT_COMMIT
+ENV BRANCH=$BRANCH
+
 FROM python@$PYTHON_VERSION AS dev
 # Dev container with dev dependencies installed
 COPY --from=production / /

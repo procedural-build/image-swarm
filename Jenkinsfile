@@ -33,7 +33,7 @@ pipeline {
         --build-arg GIT_COMMIT=$GIT_COMMIT \
         --build-arg BRANCH=$BRANCH_NAME \
         -t image-swarm:$BRANCH_NAME .'''
-        sh 'run.sh build-dev'
+        sh './run.sh build-dev'
       }
     }
 
