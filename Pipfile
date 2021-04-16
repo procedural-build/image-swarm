@@ -7,6 +7,8 @@ name = "pypi"
 pytest = "*"
 black = "==19.10b0"
 pydevd-pycharm = "~=201.7223.92"
+moto = "*"
+mockerpy = "*"
 
 [packages]
 docker = "*"

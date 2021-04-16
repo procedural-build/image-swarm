@@ -1,12 +1,13 @@
 # This is a python:3.8.3-alpine image.
 # We are using the hash to be completely consistant on jenkins builds
-ARG PYTHON_VERSION=sha256:c5623df482648cacece4f9652a0ae04b51576c93773ccd43ad459e2a195906dd
+ARG PYTHON_VERSION=sha256:d1ba411d166c9da80f5c8006f2d2a88597635087c9383d812e05024b807e04e6
 
 FROM python@$PYTHON_VERSION as build
 
 # Declare package versions
 ENV PIPENV 2020.6.2
 ENV BUILD_BASE 0.5-r2
+ENV CRYPTOGRAPHY_DONT_BUILD_RUST 1
 
 RUN pip install pipenv==$PIPENV
 
@@ -16,7 +17,8 @@ RUN pipenv lock --requirements > requirements.txt  && pipenv lock --requirements
 
 RUN apk update
 # Add GCC (required for some python libraries)
-RUN apk add build-base=$BUILD_BASE --no-cache
+#RUN apk add build-base=$BUILD_BASE gcc musl-dev python3-dev cargo --no-cache
+RUN apk add build-base=$BUILD_BASE libffi-dev openssl-dev --no-cache
 
 RUN pip wheel --wheel-dir=/root/wheels -r /tmp/requirements.txt
 RUN pip wheel --wheel-dir=/root/wheels_dev -r /tmp/requirements_dev.txt
@@ -40,9 +42,10 @@ FROM python@$PYTHON_VERSION AS dev
 COPY --from=production / /
 COPY --from=build /root/wheels_dev /root/wheels_dev
 
-WORKDIR /app
-
 # Install Dev dependencies
 RUN pip install --no-index --find-links=/root/wheels_dev -r /tmp/requirements_dev.txt
+
+WORKDIR /app
+COPY test/ /app/test
 
 CMD ["python main.py"]

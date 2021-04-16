@@ -1,28 +1,33 @@
-import os
-import time
+import logging
 import sys
+import time
 
 from services import *
-import logging
 
 
 def main():
     """MAIN"""
     logging.info(f"Running Image-Swarm!")
 
-    service_images = get_service_images()
+    check_for_aws()
 
-    for service_image in service_images:
-        new = check_for_new_image(service_image)
+    client = docker.from_env()
+    service_images = get_service_images()
+    auth = get_auth_config()
+
+    for image_name in service_images:
+        image = client.images.get(image_name)
+        new = check_for_new_image(image, auth)
+
         if new:
-            pull_new_image(service_image)
-            container = find_local_container(service_image)
-            if container:
-                kill_container(container)
+            containers = client.containers.list(filters={"ancestor": f"{image}"})
+
+            for container in containers:
+                container.kill()
 
     sleep_length = os.environ.get("INTERVAL", 5 * 60)
     logging.info(f"Going to sleep for {sleep_length}s")
-    time.sleep(sleep_length)
+    time.sleep(int(sleep_length))
 
 
 if __name__ == "__main__":

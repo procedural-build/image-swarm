@@ -1,2 +1,5 @@
 .vs
 .idea
+
+**/.pytest_cache
+test-results.xml
