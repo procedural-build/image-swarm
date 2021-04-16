@@ -1,18 +1,25 @@
 import json
+import os
 from pathlib import Path
 
 import docker
+import pytest
 from moto import mock_ecr
 from services import get_service_images, check_for_new_image, get_auth_config
 
 
-def test_get_service_images(mock_docker_api_client, create_service):
+@pytest.mark.parametrize("labels", [False, True])
+def test_get_service_images(mock_docker_api_client, create_service, labels):
+    os.environ["FILTER_LABELS"] = str(labels)
 
     images = get_service_images()
 
-    assert images
-    assert isinstance(images, list)
-    assert images[0] == "busybox:latest"
+    if not labels:
+        assert images
+        assert isinstance(images, list)
+        assert images[0] == "busybox:latest"
+    else:
+        assert not images
 
 
 def test_check_for_new_image(mock_docker_api_client):

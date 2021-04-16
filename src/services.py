@@ -14,6 +14,9 @@ def get_service_images() -> List[DockerImage]:
     client = docker.from_env()
     services = client.services.list()
 
+    if os.environ.get("FILTER_LABELS", "False") == "True":
+        services = [service for service in services if
+                  service.attrs.get("Spec", {}).get("Labels", {}).get("procedural.image-swarm.check", False)]
     images = [service.attrs.get("Spec", {}).get("TaskTemplate", {}).get("ContainerSpec", {}).get("Image", None) for
               service in services]
 
