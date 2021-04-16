@@ -26,6 +26,9 @@ pipeline {
 
     stage('Docker Build') {
       steps {
+        script {
+            env.BUILD_DATE = new Date().format('YYYY-MM-dd HH:mm:ss', TimeZone.getTimeZone('UTC'))
+        }
         sh '''docker build \
         --target production \
         --build-arg DOCKER_TAG=$DOCKER_VERSION \

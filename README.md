@@ -10,5 +10,6 @@ ENVIRONMENT VARIABLES
 | LOG_LEVEL             | INFO      | Python log level                          |
 | AWS_ACCESS_KEY_ID     | None      | AWS key                                   |
 | AWS_SECRET_ACCESS_KEY | None      | AWS key                                   |
+| AWS_DEFAULT_REGION    | None      | AWS Region                                |
 | FILTER_LABELS         | false     | Whether or not to only check service with the `procedural.image-swarm.check=true` label |
 | PRUNE                 | true      | Whether or not to prune images after a run |
