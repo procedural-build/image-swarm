@@ -1,4 +1,5 @@
 import logging
+import os
 import sys
 import time
 
@@ -24,6 +25,9 @@ def main():
 
             for container in containers:
                 container.kill()
+
+    if os.environ.get("PRUNE", "true") == "true":
+        client.images.prune()
 
     sleep_length = os.environ.get("INTERVAL", 5 * 60)
     logging.info(f"Going to sleep for {sleep_length}s")
