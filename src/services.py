@@ -94,4 +94,16 @@ def _get_ecr_token(ecr_file):
 
 def check_for_aws():
     if not os.environ.get("AWS_ACCESS_KEY_ID") and not os.environ.get("AWS_SECRET_ACCESS_KEY"):
-        raise AttributeError("Could not find AWS environment variables")
+
+        key_path = Path("/run/secrets/AWS_ACCESS_KEY_ID")
+        secret_path = Path("/run/secrets/AWS_SECRET_ACCESS_KEY")
+
+        if key_path.exists() and secret_path.exists():
+            logging.debug(f"Reading AWS from secrets")
+
+            os.environ["AWS_ACCESS_KEY_ID"] = key_path.read_text().strip()
+            os.environ["AWS_SECRET_ACCESS_KEY"] = secret_path.read_text().strip()
+        else:
+            raise AttributeError("Could not find AWS environment variables")
+    else:
+        logging.debug("Found AWS in env var")

@@ -3,17 +3,17 @@ pipeline {
 
   environment {
     WORKSPACE_DIR = """${sh(
-            returnStdout: true,
-            script: 'echo -n "${WORKSPACE##*/}"'
-        )}"""
+        returnStdout: true,
+        script: 'echo -n "${WORKSPACE##*/}"'
+    )}"""
     DOCKER_VERSION = """${sh(
         script: 'echo -n "$(date +%Y.%m.%d)-\$(git rev-parse --short HEAD)"',
         returnStdout: true
     )}"""
     HOST_SRC_PATH = """${sh(
-            returnStdout: true,
-            script: 'echo -n "$HOST_WORKSPACE_PATH${WORKSPACE##*/}/"'
-        )}"""
+        returnStdout: true,
+        script: 'echo -n "$HOST_WORKSPACE_PATH${WORKSPACE##*/}/"'
+    )}"""
   }
 
   stages {
