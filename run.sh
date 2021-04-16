@@ -7,7 +7,7 @@ case "$1" in
     ;;
   test)
     docker run --rm -i \
-    -v $HOST_SRC_PATH/:/data \
+    -v $HOST_SRC_PATH:/data \
      image-swarm:dev python -m pytest test/ --junit-xml=/data/test-results.xml
     ;;
   *)
