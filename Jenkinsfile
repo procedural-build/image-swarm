@@ -39,7 +39,7 @@ pipeline {
 
     stage('Test') {
       steps {
-        sh 'run.sh test'
+        sh './run.sh test'
       }
       post {
         always {
