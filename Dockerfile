@@ -35,7 +35,7 @@ RUN pip install --no-index --find-links=/root/wheels -r /tmp/requirements.txt
 
 COPY src/ /app
 
-CMD ["python /app/main.py"]
+CMD ["python", "/app/main.py"]
 
 # Versioning
 ARG DOCKER_TAG
@@ -59,4 +59,4 @@ RUN pip install --no-index --find-links=/root/wheels_dev -r /tmp/requirements_de
 WORKDIR /app
 COPY test/ /app/test
 
-CMD ["python /app/main.py"]
+CMD ["python", "/app/main.py"]
