@@ -2,7 +2,7 @@ import logging
 import os
 import sys
 import time
-
+import docker
 from services import *
 
 
@@ -22,7 +22,7 @@ def main():
         new = check_for_new_image(image, auth)
 
         if new:
-            containers = client.containers.list(filters={"ancestor": f"{image}"})
+            containers = client.containers.list(filters={"ancestor": f"{image_name}"})
             logging.info(f"Found {len(containers)} container with image {image_name}")
 
             for container in containers:
