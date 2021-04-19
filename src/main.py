@@ -17,6 +17,7 @@ def main():
     auth = get_auth_config()
 
     for image_name in service_images:
+        logging.info(f"Checking for new image of: {image_name}")
         image = client.images.get(image_name)
         new = check_for_new_image(image, auth)
 
@@ -24,6 +25,7 @@ def main():
             containers = client.containers.list(filters={"ancestor": f"{image}"})
 
             for container in containers:
+                logging.info(f"Killing {container.id}")
                 container.kill()
 
     if os.environ.get("PRUNE", "true") == "true":
