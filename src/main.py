@@ -23,12 +23,14 @@ def main():
 
         if new:
             containers = client.containers.list(filters={"ancestor": f"{image}"})
+            logging.info(f"Found {len(containers)} container with image {image_name}")
 
             for container in containers:
                 logging.info(f"Killing {container.id}")
                 container.kill()
 
     if os.environ.get("PRUNE", "true") == "true":
+        logging.info("Pruning images")
         client.images.prune()
 
     sleep_length = os.environ.get("INTERVAL", 5 * 60)
