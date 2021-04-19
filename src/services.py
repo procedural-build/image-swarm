@@ -10,7 +10,21 @@ import docker
 from docker.models.images import Image as DockerImage
 
 
-def get_service_images() -> List[DockerImage]:
+def get_local_images() -> List[str]:
+    logging.info("List local images")
+
+    client = docker.from_env()
+    images = client.images.list()
+    images = [tag
+              for image in images
+              for tag in image.tags]
+    images = list(set(images))
+
+    logging.info(f"Found {len(images)} images in swarm")
+    return images
+
+
+def get_service_images() -> List[str]:
     client = docker.from_env()
     services = client.services.list()
 

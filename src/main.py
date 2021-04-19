@@ -8,12 +8,15 @@ from services import *
 
 def main():
     """MAIN"""
-    logging.info(f"Running Image-Swarm on {os.environ.get('HOSTNAME', 'Local')}!")
+    client = docker.from_env()
+    info = client.info()
+    logging.info(f"Running Image-Swarm on {info.get('Name')}!")
 
     check_for_aws()
-
-    client = docker.from_env()
-    service_images = get_service_images()
+    if info.get("Swarm", {}).get("ControlAvailable", False):
+        service_images = get_service_images()
+    else:
+        service_images = get_local_images()
     auth = get_auth_config()
 
     for image_name in service_images:
