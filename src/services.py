@@ -40,6 +40,9 @@ def check_for_new_image(image: DockerImage, auth_config: dict):
     client = docker.from_env()
     image_name, tags = get_image_tags(image)
 
+    if "aws" not in image_name:
+        auth_config = {}
+
     registry_data = client.images.get_registry_data(image.tags[0], auth_config=auth_config)
 
     if registry_data.id != image.id:
