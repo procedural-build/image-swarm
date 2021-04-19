@@ -8,7 +8,7 @@ from services import *
 
 def main():
     """MAIN"""
-    logging.info(f"Running Image-Swarm!")
+    logging.info(f"Running Image-Swarm on {os.environ.get('HOSTNAME', 'Local')}!")
 
     check_for_aws()
 

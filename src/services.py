@@ -47,11 +47,13 @@ def check_for_new_image(image: DockerImage, auth_config: dict):
         for tag in tags:
             logging.debug(f"Pulling tag: {tag}")
 
-            client.images.pull(image_name, tag=tag, auth_config=auth_config)
+            _image = client.images.pull(image_name, tag=tag, auth_config=auth_config)
+            logging.info(f"Pulled {_image.id}")
 
         return True
 
     logging.info(f"Image: {image} is up to date")
+
     return False
 
 
