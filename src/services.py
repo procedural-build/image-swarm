@@ -20,6 +20,7 @@ def get_service_images() -> List[DockerImage]:
                                                                         "false") == "true"]
     images = [service.attrs.get("Spec", {}).get("TaskTemplate", {}).get("ContainerSpec", {}).get("Image", None) for
               service in services]
+    images = list(set(images))
 
     logging.info(f"Found {len(images)} images in swarm")
     return images
