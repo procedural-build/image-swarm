@@ -6,20 +6,30 @@ import docker
 from docker.errors import ImageNotFound
 
 from services import *
+from images import *
+from auth import *
 
 
 def main():
     """MAIN"""
+
     client = docker.from_env()
     info = client.info()
     logging.info(f"Running Image-Swarm on {info.get('Name')}!")
 
     check_for_aws()
-    if info.get("Swarm", {}).get("ControlAvailable", False):
+    check_for_redis()
+    leader = is_leader()
+
+    if leader:
+        logging.info("Node is leader")
         service_images = get_service_images()
+        set_images(service_images)
     else:
-        service_images = get_local_images()
-    auth = get_auth_config()
+        logging.info("Node is not leader")
+        service_images = get_images()
+
+    auth_config = get_auth_config()
 
     for image_name in service_images:
         try:
@@ -29,14 +39,14 @@ def main():
             except ImageNotFound:
                 logging.info(f"Image not found locally")
                 image = image_name
-            new = check_for_new_image(image, auth)
+            new = check_for_new_image(image, auth_config)
 
             if new:
                 containers = client.containers.list(filters={"ancestor": f"{image_name}"})
                 logging.info(f"Found {len(containers)} container with image {image_name}")
 
                 for container in containers:
-                    logging.info(f"Killing {container.id}")
+                    logging.info(f"Killing {container.name}")
                     container.kill()
 
         except Exception as error:

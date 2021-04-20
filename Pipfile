@@ -13,6 +13,7 @@ mockerpy = "*"
 [packages]
 docker = "*"
 boto3 = "*"
+redis = "*"
 
 [requires]
 python_version = "3.8"

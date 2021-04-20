@@ -5,7 +5,8 @@ from pathlib import Path
 import docker
 import pytest
 from moto import mock_ecr
-from services import get_service_images, check_for_new_image, get_auth_config
+from images import get_service_images, check_for_new_image
+from auth import get_auth_config
 
 
 @pytest.mark.parametrize("labels", ["false", "true"])

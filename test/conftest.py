@@ -23,6 +23,11 @@ def create_service(tmpdir):
     mockerpy.services.create_fake_service(tmpdir, "test")
 
 
+@pytest.fixture()
+def create_node(tmpdir):
+    mockerpy.nodes.create_fake_node(tmpdir, "test")
+
+
 @pytest.fixture(scope='function')
 def aws_credentials():
     """Mocked AWS Credentials for moto."""
