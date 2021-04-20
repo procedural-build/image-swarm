@@ -3,6 +3,8 @@ import os
 import sys
 import time
 import docker
+from docker.errors import ImageNotFound
+
 from services import *
 
 
@@ -20,17 +22,25 @@ def main():
     auth = get_auth_config()
 
     for image_name in service_images:
-        logging.info(f"Checking for new image of: {image_name}")
-        image = client.images.get(image_name)
-        new = check_for_new_image(image, auth)
+        try:
+            logging.info(f"Checking for new image of: {image_name}")
+            try:
+                image = client.images.get(image_name)
+            except ImageNotFound:
+                logging.info(f"Image not found locally")
+                image = image_name
+            new = check_for_new_image(image, auth)
 
-        if new:
-            containers = client.containers.list(filters={"ancestor": f"{image_name}"})
-            logging.info(f"Found {len(containers)} container with image {image_name}")
+            if new:
+                containers = client.containers.list(filters={"ancestor": f"{image_name}"})
+                logging.info(f"Found {len(containers)} container with image {image_name}")
 
-            for container in containers:
-                logging.info(f"Killing {container.id}")
-                container.kill()
+                for container in containers:
+                    logging.info(f"Killing {container.id}")
+                    container.kill()
+
+        except Exception as error:
+            logging.error(f"Could update image: {image_name}. Got error: {error}")
 
     if os.environ.get("PRUNE", "true") == "true":
         logging.info("Pruning images")

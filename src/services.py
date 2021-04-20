@@ -4,9 +4,10 @@ import json
 import logging
 import os
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 import docker
+from docker.client import DockerClient
 from docker.models.images import Image as DockerImage
 
 
@@ -50,11 +51,25 @@ def get_image_tags(image) -> Tuple[str, List[str]]:
         return name, tags
 
 
-def check_for_new_image(image: DockerImage, auth_config: dict):
+def pull_new_image(image: str, auth_config: dict, client: DockerClient):
+    image_name, tag = image.split(":")
+    logging.debug(f"Pulling tag: {tag}")
+
+    _image = client.images.pull(image_name, tag=tag, auth_config=auth_config)
+    logging.info(f"Pulled {_image.id}")
+    return False
+
+
+def check_for_new_image(image: Union[DockerImage, str], auth_config: dict):
     client = docker.from_env()
-    image_name, tags = get_image_tags(image)
+    if isinstance(image, str):
+        logging.info(f"Pulling new image: {image}")
+        return pull_new_image(image, auth_config, client)
+    else:
+        image_name, tags = get_image_tags(image)
 
     if "aws" not in image_name:
+        logging.info("Removing Auth before pulling images")
         auth_config = {}
 
     registry_data = client.images.get_registry_data(image.tags[0], auth_config=auth_config)
