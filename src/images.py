@@ -76,6 +76,10 @@ def pull_new_image(image: str, auth_config: dict, client: DockerClient):
     image_name, tag = image.split(":")
     logging.debug(f"Pulling tag: {tag}")
 
+    if "aws" not in image_name:
+        logging.info("Removing Auth before pulling images")
+        auth_config = {}
+
     _image = client.images.pull(image_name, tag=tag, auth_config=auth_config)
     logging.info(f"Pulled {_image.id}")
     return False
