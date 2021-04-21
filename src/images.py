@@ -118,7 +118,7 @@ def check_for_new_image(image: Union[DockerImage, str], auth_config: dict):
 def get_repo_digest(image: DockerImage) -> str:
     """Get the repo digest of an image"""
 
-    repo_digests = image.attrs.get("RepoDigests", None)
+    repo_digests = image.attrs.get("RepoDigests", [])
 
     if len(repo_digests) == 0:
         return ""
