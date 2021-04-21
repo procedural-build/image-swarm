@@ -28,6 +28,7 @@ def main():
     else:
         logging.info("Node is not leader")
         service_images = get_images()
+        logging.info(f"Got {len(service_images)} from Redis")
 
     auth_config = get_auth_config()
 
