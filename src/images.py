@@ -29,7 +29,7 @@ def get_images() -> List[str]:
     store = redis.Redis(host=host, port=port)
 
     logging.info("Getting service images from Redis")
-    return [key for key in store.scan_iter()]
+    return [key.decode() for key in store.scan_iter()]
 
 
 def get_local_images() -> List[str]:
