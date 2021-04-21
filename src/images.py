@@ -99,7 +99,7 @@ def check_for_new_image(image: Union[DockerImage, str], auth_config: dict):
         logging.info(f"Could not find image: {image}. Skipping")
         return False
 
-    if registry_data.id != image.id:
+    if registry_data.id != get_repo_digest(image):
         logging.info(f"Pulling new version of {image}")
 
         for tag in tags:
@@ -115,3 +115,12 @@ def check_for_new_image(image: Union[DockerImage, str], auth_config: dict):
     return False
 
 
+def get_repo_digest(image: DockerImage) -> str:
+    """Get the repo digest of an image"""
+
+    repo_digests = image.attrs.get("RepoDigests", None)
+
+    if len(repo_digests) == 0:
+        return ""
+
+    return repo_digests[0].split("@")[1]
