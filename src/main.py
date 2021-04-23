@@ -40,15 +40,16 @@ def main():
             except ImageNotFound:
                 logging.info(f"Image not found locally")
                 image = image_name
-            new = check_for_new_image(image, auth_config)
+            repo_digest = check_for_new_image(image, auth_config)
 
-            if new:
-                containers = client.containers.list(filters={"ancestor": f"{image_name}"})
+            if repo_digest:
+                containers = client.containers.list(filters={"ancestor": f"{repo_digest}"})
                 logging.info(f"Found {len(containers)} container with image {image_name}")
 
                 for container in containers:
-                    logging.info(f"Killing {container.name}")
+                    logging.info(f"Killing and removing {container.name}")
                     container.kill()
+                    container.remove()
 
         except Exception as error:
             logging.error(f"Could update image: {image_name}. Got error: {error}")

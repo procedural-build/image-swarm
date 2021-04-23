@@ -103,7 +103,8 @@ def check_for_new_image(image: Union[DockerImage, str], auth_config: dict):
         logging.info(f"Could not find image: {image}. Skipping")
         return False
 
-    if registry_data.id != get_repo_digest(image):
+    repo_digest = get_repo_digest(image)
+    if registry_data.id != repo_digest:
         logging.info(f"Pulling new version of {image}")
 
         for tag in tags:
@@ -112,7 +113,7 @@ def check_for_new_image(image: Union[DockerImage, str], auth_config: dict):
             _image = client.images.pull(image_name, tag=tag, auth_config=auth_config)
             logging.info(f"Pulled {_image.id}")
 
-        return True
+        return repo_digest
 
     logging.info(f"Image: {image} is up to date")
 
