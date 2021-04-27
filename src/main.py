@@ -35,15 +35,15 @@ def main():
     for image_name in service_images:
         try:
             logging.info(f"Checking for new image of: {image_name}")
+            containers = client.containers.list(filters={"ancestor": f"{image_name}"})
             try:
                 image = client.images.get(image_name)
             except ImageNotFound:
                 logging.info(f"Image not found locally")
                 image = image_name
-            repo_digest = check_for_new_image(image, auth_config)
+            new = check_for_new_image(image, auth_config)
 
-            if repo_digest:
-                containers = client.containers.list(filters={"ancestor": f"{repo_digest}"})
+            if new:
                 logging.info(f"Found {len(containers)} container with image {image_name}")
 
                 for container in containers:
